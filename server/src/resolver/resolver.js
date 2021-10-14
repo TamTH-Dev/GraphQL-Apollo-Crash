@@ -1,5 +1,3 @@
-const { books, authors } = require('../data/static')
-
 const resolvers = {
   Query: {
     books: async (_, __, { methods }) => {
@@ -10,7 +8,14 @@ const resolvers = {
       }
       return null
     },
-    book: (_, args) => books.find((book) => book.id == args.id),
+    book: async (_, { id }, { methods }) => {
+      try {
+        return await methods.getBook(id)
+      } catch (error) {
+        console.error(error)
+      }
+      return null
+    },
     authors: async (_, __, { methods }) => {
       try {
         return await methods.getAllAuthors()
@@ -19,12 +24,19 @@ const resolvers = {
       }
       return null
     },
-    author: (_, args) => authors.find((author) => author.id == args.id),
+    author: async (_, { id }, { methods }) => {
+      try {
+        return await methods.getAuthor(id)
+      } catch (error) {
+        console.error(error)
+      }
+      return null
+    },
   },
   Mutation: {
     async createAuthor(_, args, { methods }) {
       try {
-        return await methods.createAuthor(args) 
+        return await methods.createAuthor(args)
       } catch (error) {
         console.error(error)
       }
@@ -32,7 +44,7 @@ const resolvers = {
     },
     async createBook(_, args, { methods }) {
       try {
-        return await methods.createBook(args) 
+        return await methods.createBook(args)
       } catch (error) {
         console.error(error)
       }
@@ -40,13 +52,23 @@ const resolvers = {
     },
   },
   Book: {
-    author: (parent, _) => {
-      return authors.find((author) => author.id == parent.authorId)
+    author: async ({ authorId }, _, { methods }) => {
+      try {
+        return await methods.getAuthor(authorId)
+      } catch (error) {
+        console.error(error)
+      }
+      return null
     },
   },
   Author: {
-    books: (parent, _) => {
-      return books.filter((book) => book.authorId == parent.id)
+    books: async ({ id }, _, { methods }) => {
+      try {
+        return await methods.getAllBooks({ authorId: id })
+      } catch (error) {
+        console.error(error)
+      }
+      return null
     },
   },
 }

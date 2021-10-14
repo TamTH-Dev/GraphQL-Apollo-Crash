@@ -2,8 +2,10 @@ const Book = require('../models/Book')
 const Author = require('../models/Author')
 
 const methods = {
-  getAllBooks: async () => await Book.find(),
+  getAllBooks: async (args = {}) => await Book.find(args),
+  getBook: async (id) => await Book.findById(id),
   getAllAuthors: async () => await Author.find(),
+  getAuthor: async (id) => await Author.findById(id),
   createAuthor: async (args) => {
     const newAuthor = new Author(args)
     return await newAuthor.save()

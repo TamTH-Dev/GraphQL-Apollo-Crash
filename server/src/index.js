@@ -15,12 +15,10 @@ const main = async () => {
   // Connect to mongoDB
   await mongoose.connect(process.env.MONGO_URL)
 
-  // Load db methods
-
   const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: () => ({ methods }),
+    context: () => ({ methods }), // Load db methods
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground],
   })
 
